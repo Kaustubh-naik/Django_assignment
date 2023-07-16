@@ -1,0 +1,32 @@
+/* styles.css */
+
+.todo-task-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.todo-task-form .form-group {
+  margin-bottom: 20px;
+}
+
+.todo-task-form .form-control {
+  padding: 12px;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  border: none;
+  box-shadow: none;
+}
+
+.todo-task-form .form-control:focus {
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.todo-task-form .form-group label {
+  font-weight: bold;
+}
+
+.todo-task-form textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}

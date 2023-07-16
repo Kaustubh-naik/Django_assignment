@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .header {
+            background-color: #333;
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .create-button {
+            margin-left: auto;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+</head>
+<body>
+    <div class="header">
+        <h1>Todo List</h1>
+        <div>
+            <a href="{% url 'createTask' %}" class="btn btn-primary create-button">Create</a>
+            <button id="show-pending" class="btn btn-info">Show Pending Tasks</button>
+            <button id="show-all" class="btn btn-secondary">Show All Tasks</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="alert {{msg.tags}}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+        {% for task in tasks %}
+        <div class="card my-3">
+            <div class="card-body">
+                <h5 class="card-title">Title: {{ task.title }}</h5>
+                <p class="card-text">Description: {{ task.description }}</p>
+                <p class="card-text"><strong>Start Date:</strong> {{ task.start_date }}</p>
+                <p class="card-text"><strong>End Date:</strong> {{ task.end_date }}</p>
+                <p class="card-text"><strong>User:</strong> {{ task.user }}</p>
+                <p class="card-text">
+                    <strong>Status:</strong>
+                    <span class="badge {% if task.is_completed %}bg-success{% else %}bg-warning{% endif %} text-light">
+                        {% if task.is_completed %}Completed{% else %}Pending{% endif %}
+                    </span>
+                </p>                
+                <a href="{% url 'edit_todo_task' task_id=task.id %}" class="btn btn-primary">Edit Task</a>
+                <a href="{% url 'delete_todo_task' task_id=task.id %}" class="btn btn-danger">Delete Task</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+<script>
+    // Dismiss the success message after 8 seconds
+    $(document).ready(function() {
+        setTimeout(function() {
+            $('.alert-success').fadeOut('slow');
+            $('.alert-danger').fadeOut('slow');
+        }, 8000);
+    });
+    
+    $(document).ready(function() {
+        // Show pending tasks
+        $('#show-pending').click(function() {
+            $('.card').hide();  // Hide all tasks
+            $('.card:has(.badge.bg-warning)').show();  // Show tasks with pending status
+        });
+        // Show all tasks
+        $('#show-all').click(function() {
+            $('.card').show();  // Show all tasks
+        });
+    });
+</script>
+</html>
