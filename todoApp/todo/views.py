@@ -1,15 +1,30 @@
 from django.shortcuts import render,redirect,get_object_or_404
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import TodoTask
 from django.views import View
 from .forms import TodoTaskForm
 
+def login_page(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        tasks = TodoTask.objects.filter(user=user)
+        if user is not None:
+            login(request, user)
+            return render(request, 'html/homePage.html', {'tasks': tasks})
+        else:
+            error_message = 'Invalid username or password.'
+            return render(request, 'html/loginpage.html', {'error_message': error_message})
+    return render(request, 'html/loginpage.html')
+
 def todo_list(request):
-    tasks = TodoTask.objects.all()
+    tasks = TodoTask.objects.filter(user=request.user)
     return render(request, 'html/homePage.html', {'tasks': tasks})
 
 def show_pending_task(request):
-    incomplete_tasks = TodoTask.objects.filter(is_completed=False)
+    incomplete_tasks = TodoTask.objects.filter(is_completed=False,user=request.user)
     return render(request, 'html/homePage.html', {'tasks': incomplete_tasks})
 
 class CreateTodoTaskView(View):
@@ -71,4 +86,8 @@ def delete_todo_task(request, task_id):
     task.delete()
     messages.error(request, 'Todo task deleted successfully.')
     return redirect('todo_list')
+
+def logout_view(request):
+    logout(request)
+    return redirect('login_page')
 
