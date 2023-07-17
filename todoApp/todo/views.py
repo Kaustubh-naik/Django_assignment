@@ -8,6 +8,10 @@ def todo_list(request):
     tasks = TodoTask.objects.all()
     return render(request, 'html/homePage.html', {'tasks': tasks})
 
+def show_pending_task(request):
+    incomplete_tasks = TodoTask.objects.filter(is_completed=False)
+    return render(request, 'html/homePage.html', {'tasks': incomplete_tasks})
+
 class CreateTodoTaskView(View):
     def get(self, request):
         form = TodoTaskForm()
@@ -48,6 +52,7 @@ def edit_todo_task(request, task_id):
             task.user = form.cleaned_data['user']
             task.is_completed = form.cleaned_data['is_completed']
             task.save()
+            messages.success(request, 'Todo task edited successfully.')
             return redirect('todo_list')  # Redirect to the desired page after successful editing
     else:
         form = TodoTaskForm(initial={
@@ -62,8 +67,8 @@ def edit_todo_task(request, task_id):
     return render(request, 'html/editTodoTask.html', {'form': form})
 
 def delete_todo_task(request, task_id):
-
     task = get_object_or_404(TodoTask, id=task_id)
     task.delete()
+    messages.error(request, 'Todo task deleted successfully.')
     return redirect('todo_list')
 

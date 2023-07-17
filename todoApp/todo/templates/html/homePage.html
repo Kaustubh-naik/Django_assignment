@@ -23,13 +23,12 @@
 <body>
     <div class="header">
         <h1>Todo List</h1>
-        <div>
-            <a href="{% url 'createTask' %}" class="btn btn-primary create-button">Create</a>
-            <button id="show-pending" class="btn btn-info">Show Pending Tasks</button>
-            <button id="show-all" class="btn btn-secondary">Show All Tasks</button>
+        <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="{% url 'createTask' %}" class="btn btn-primary create-button">Create</a>
+        <a href="{% url 'show_pending_task'%}" class="btn btn-primary create-button">Show Pending task</a>
+        <a href="{% url 'todo_list' %}" class="btn btn-primary create-button">Show All tasks</a>
         </div>
     </div>
-    
     <div class="container">
         {% if messages %}
             {% for msg in messages %}
@@ -64,18 +63,6 @@
             $('.alert-success').fadeOut('slow');
             $('.alert-danger').fadeOut('slow');
         }, 8000);
-    });
-    
-    $(document).ready(function() {
-        // Show pending tasks
-        $('#show-pending').click(function() {
-            $('.card').hide();  // Hide all tasks
-            $('.card:has(.badge.bg-warning)').show();  // Show tasks with pending status
-        });
-        // Show all tasks
-        $('#show-all').click(function() {
-            $('.card').show();  // Show all tasks
-        });
     });
 </script>
 </html>
